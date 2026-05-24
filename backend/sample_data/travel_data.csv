@@ -1,0 +1,4 @@
+Employee,From_Airport,To_Airport,Class,Mode
+John,BLR,DXB,Business,Flight
+Alice,DEL,SIN,Economy,Flight
+Rahul,BOM,LHR,Premium Economy,Flight
