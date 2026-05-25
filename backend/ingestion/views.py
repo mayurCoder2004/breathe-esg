@@ -18,12 +18,17 @@ class FileUploadAPIView(APIView):
         )
 
         if serializer.is_valid():
-
-            CSVIngestionService.process_file(
-                company_id=serializer.validated_data["company_id"],
-                source_type=serializer.validated_data["source_type"],
-                uploaded_file=serializer.validated_data["file"]
-            )
+            try:
+                CSVIngestionService.process_file(
+                    company_id=serializer.validated_data["company_id"],
+                    source_type=serializer.validated_data["source_type"],
+                    uploaded_file=serializer.validated_data["file"]
+                )
+            except ValueError as error:
+                return Response(
+                    {"error": str(error)},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
 
             return Response(
                 {"message": "File uploaded successfully"},

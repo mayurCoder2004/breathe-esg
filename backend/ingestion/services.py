@@ -9,8 +9,12 @@ class CSVIngestionService:
 
     @staticmethod
     def process_file(company_id, source_type, uploaded_file):
-
-        company = Company.objects.get(id=company_id)
+        try:
+            company = Company.objects.get(id=company_id)
+        except Company.DoesNotExist as exc:
+            raise ValueError(
+                f"Company with id={company_id} does not exist."
+            ) from exc
 
         data_source = DataSource.objects.create(
             company=company,
@@ -31,10 +35,17 @@ class CSVIngestionService:
                 row_number=index + 1
             )
 
-            normalized_data = CSVIngestionService.normalize_row(
-                source_type,
-                raw_json
-            )
+            try:
+                normalized_data = CSVIngestionService.normalize_row(
+                    source_type,
+                    raw_json
+                )
+            except KeyError as exc:
+                missing_column = str(exc).strip("'")
+                raise ValueError(
+                    f"Invalid CSV format for {source_type}. "
+                    f"Missing column: {missing_column} (row {index + 1})."
+                ) from exc
 
             status = CSVIngestionService.validate_row(
                 normalized_data
@@ -56,6 +67,10 @@ class CSVIngestionService:
     def normalize_row(source_type, row):
 
         if source_type == "SAP":
+            required_columns = ["MENGE", "MEINS"]
+            for column in required_columns:
+                if column not in row:
+                    raise KeyError(column)
 
             return {
                 "category": "Fuel",
@@ -65,6 +80,10 @@ class CSVIngestionService:
             }
 
         elif source_type == "UTILITY":
+            required_columns = ["Usage_kWh"]
+            for column in required_columns:
+                if column not in row:
+                    raise KeyError(column)
 
             return {
                 "category": "Electricity",
@@ -81,6 +100,10 @@ class CSVIngestionService:
                 "amount": 1,
                 "unit": "trip"
             }
+
+        raise ValueError(
+            f"Unsupported source type: {source_type}"
+        )
 
     @staticmethod
     def validate_row(data):
