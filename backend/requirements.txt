@@ -1,0 +1,15 @@
+﻿Django==6.0.5
+djangorestframework==3.16.1
+django-cors-headers==4.9.0
+gunicorn==23.0.0
+whitenoise==6.9.0
+dj-database-url==3.0.1
+psycopg2-binary==2.9.10
+pandas==2.3.2
+numpy==2.3.4
+python-dateutil==2.9.0.post0
+pytz==2026.2
+tzdata==2026.2
+sqlparse==0.5.5
+asgiref==3.11.1
+six==1.17.0
