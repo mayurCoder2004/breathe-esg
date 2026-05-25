@@ -1,4 +1,4 @@
-# ------------------------------
+﻿# ------------------------------
 # OS / Editor
 # ------------------------------
 .DS_Store
@@ -45,6 +45,7 @@ backend/db.sqlite3
 backend/*.sqlite3
 backend/media/
 backend/staticfiles/
+staticfiles/
 
 # Secrets / local env
 .env
@@ -72,3 +73,4 @@ frontend/dist/
 frontend/dist-ssr/
 frontend/.vite/
 frontend/coverage/
+.vercel/
